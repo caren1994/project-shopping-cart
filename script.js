@@ -77,8 +77,8 @@ const questao2 = async () => {
 };
 function questao8() {
   const locals = JSON.parse(getSavedCartItems() || '[]');//pego as strings e coloco em objeto que estavam dentro do local pego com a função get, e se nao tiver recebo um array vazio
-  locals.forEach((element) => {// se tiver pego cada elemento
-    const objetonovo = createCartItemElement(element);//e passo esse novo objeto como parametro para a função que vai construir as li e colocar na lista do carrinho
+  locals.forEach((element) => {// se tiver ,pego cada elemento
+    const objetonovo = createCartItemElement(element);//e passo esse elemento que é um  objeto como parametro para a função que vai construir as li e colocar na lista do carrinho
     cartItems.appendChild(objetonovo);//e apendo na ol
   });
 }
@@ -90,5 +90,5 @@ botaoesvaziar.addEventListener('click', limpaTudo);// chama o botao e adc um eve
 
 window.onload = async () => {
   await questao2();
-  questao8();
+  questao8();// mostro na tela 
 };

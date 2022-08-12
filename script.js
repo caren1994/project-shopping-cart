@@ -5,6 +5,7 @@ const items = document.querySelector('.items');// elemento pai  dos produtos
 const cartItems = document.querySelector('.cart__items');// elemento pai do carrinho de compras
 const botaoesvaziar = document.querySelector('.empty-cart');// salva o botao nessa variavel
 localStorageobjeto = [];// crio um array vazio para por o objeto a ser mudado para string
+const totalPrice = document.querySelector('.total-price');
 
 const createProductImageElement = (imageSource) => {
   const img = document.createElement('img');
@@ -19,20 +20,38 @@ const createCustomElement = (element, className, innerText) => {
   e.innerText = innerText;
   return e;
 };
+
+const Precos = () => {
+  const produtos = cartItems.children;
+  const resultado = [];
+  for (let i = 0; i < produtos.length; i += 1) {
+    const preco = Number(produtos[i].innerText.split('PRICE: $')[1]);
+    resultado.push(preco);
+  }
+  return resultado;
+};
+
+const somaCart = () => {
+  const precos = Precos();
+  const valorTotal = precos.reduce((acc, preco) => acc + preco, 0);
+  totalPrice.innerText = valorTotal.toPrecision();
+};
+
 const getSkuFromProductItem = (item) =>// recebe o pai do botao clicado que éa seção
   item.querySelector('span.item__sku').innerText;// dentro dessa seção ele procura o span com a classe item--sku e pega o valor escrito que é o id
   
   const cartItemClickListener = (event) => {
     cartItems.removeChild(event.target);// remove o filho de cartitems que foi clicado do carrinho
     localStorageobjeto = localStorageobjeto.filter((element) => element !== event.target);// filtro o array e coloco dentro desse array novo só os elementos diferentes do event.target que foi removido
-    };
+    somaCart();
+  };
 
     const createCartItemElement = ({ sku, name, salePrice }) => { // recebe o objeto
       const li = document.createElement('li');// cria uma li
       li.className = 'cart__item';// coloca a classe
       li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;// o texto , com os valores passados como parametro
       li.addEventListener('click', cartItemClickListener);// coloca um add event listener em cada li passada para o carrinho
-      return li;// retorna a li
+     return li;// retorna a li
     };
 
 const questao4 = async (event) => { // recebe o click do botao certo 
@@ -47,6 +66,7 @@ const item = createCartItemElement(objeto);// manda o objeto como argumento para
 cartItems.appendChild(item);// apenda as li do resultado da função na ol
 localStorageobjeto.push(objeto);// o resultado do objeto que se tornara uma li é colocada no array
 saveCartItems(JSON.stringify(localStorageobjeto));// transformo esse objeto em string e chamo ele como parametroo da função save para ser guardada no localstorage
+somaCart();
 };
 
 const createProductItemElement = ({ sku, name, image }) => { // recebe o parametro fa funçao2
@@ -81,9 +101,12 @@ function questao8() {
     const objetonovo = createCartItemElement(element);// e passo esse elemento que é um  objeto como parametro para a função que vai construir as li e colocar na lista do carrinho
     cartItems.appendChild(objetonovo);// e apendo na ol
   });
+  somaCart();
 }
+
 function limpaTudo() {
   cartItems.innerText = ' ';// chama a ol aonde esta guardada as li e limpa com o espaço do innet.text
+  somaCart();
 }
 
 botaoesvaziar.addEventListener('click', limpaTudo);// chama o botao e adc um event listener de click e a funçãopara limpara lista de compras 
@@ -95,6 +118,7 @@ const carregando = async () => { // função11
   items.appendChild(elementP);// appendo ele na section
   await questao2();// ele vai esperar a funçao terminar e vai remover meu p , se nao o p fica aparecendo
   items.firstChild.remove();
+  somaCart();
 };
 
 window.onload = async () => {
